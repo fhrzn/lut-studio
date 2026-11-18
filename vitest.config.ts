@@ -13,6 +13,9 @@ export default defineConfig({
     include: ['tests/unit/**/*.test.ts'],
     coverage: {
       provider: 'v8',
+      thresholds: {
+        'src/lut/cube.ts': { branches: 100 },
+      },
     },
   },
 });

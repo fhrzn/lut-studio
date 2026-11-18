@@ -1,0 +1,13 @@
+# CRLF line endings, blank lines and trailing whitespace  
+
+LUT_3D_SIZE 2   
+TITLE "crlf"
+
+0.0 0.0 0.0
+1.0 0.0 0.0  
+0.0 1.0 0.0
+1.0 1.0 0.0
+0.0 0.0 1.0
+1.0 0.0 1.0
+0.0 1.0 1.0
+1.0 1.0 1.0
