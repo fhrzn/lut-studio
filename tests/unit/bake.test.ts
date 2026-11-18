@@ -21,12 +21,12 @@ describe('bakeRecipe', () => {
 
   it('returns size^3*3 values', () => {
     const size = 33;
-    const lut = bakeRecipe(dummyRecipe, () => undefined, size);
+    const { lut } = bakeRecipe(dummyRecipe, () => undefined, size);
     expect(lut.data.length).toBe(size * size * size * 3);
   });
 
   it('has first triplet [0,0,0]', () => {
-    const lut = bakeRecipe(dummyRecipe, () => undefined, 33);
+    const { lut } = bakeRecipe(dummyRecipe, () => undefined, 33);
     expect(lut.data[0]).toBe(0);
     expect(lut.data[1]).toBe(0);
     expect(lut.data[2]).toBe(0);
@@ -34,7 +34,7 @@ describe('bakeRecipe', () => {
 
   it('has last triplet [1,1,1]', () => {
     const size = 33;
-    const lut = bakeRecipe(dummyRecipe, () => undefined, size);
+    const { lut } = bakeRecipe(dummyRecipe, () => undefined, size);
     const lastIndex = size * size * size * 3;
     expect(lut.data[lastIndex - 3]).toBe(1);
     expect(lut.data[lastIndex - 2]).toBe(1);
