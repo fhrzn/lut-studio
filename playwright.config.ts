@@ -8,24 +8,26 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: 'http://localhost:5173',
+    baseURL: 'http://localhost:4173/lut-studio/',
     trace: 'on-first-retry',
   },
   projects: [
     {
       name: 'chromium',
       use: {
-        ...devices['chromium'],
-        launchArgs: [
-          '--use-gl=angle',
-          '--use-angle=swiftshader',
-        ],
-      } as never,
+        ...devices['Desktop Chrome'],
+        launchOptions: {
+          args: [
+            '--use-gl=angle',
+            '--use-angle=swiftshader',
+          ],
+        },
+      },
     },
   ],
   webServer: {
     command: 'pnpm build && pnpm preview',
-    url: 'http://localhost:4173',
+    url: 'http://localhost:4173/lut-studio/',
     reuseExistingServer: !process.env.CI,
   },
 });
