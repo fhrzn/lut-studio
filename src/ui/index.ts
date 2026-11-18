@@ -1,1 +1,2 @@
-// UI components
+// Editor UI
+export { Editor } from './Editor';

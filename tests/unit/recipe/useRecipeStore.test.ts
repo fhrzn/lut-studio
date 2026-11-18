@@ -111,4 +111,124 @@ describe('useRecipeStore', () => {
     expect(s().past).toEqual([]);
     expect(s().future).toEqual([]);
   });
+  describe('continuous edits', () => {
+    it('one beginEdit..endEdit drag is one undo step', () => {
+      const a = createLayer('exposure');
+      s().addLayer(a);
+      const before = s().recipe;
+      s().beginEdit();
+      for (const ev of [0.5, 1, 1.5, 2]) s().updateLayer(a.id, { params: { ev } });
+      s().endEdit();
+      expect(s().past).toHaveLength(2);
+      expect(s().recipe.layers[0]).toMatchObject({ params: { ev: 2 } });
+      s().undo();
+      expect(s().recipe).toBe(before);
+    });
+
+    it('repeated beginEdit calls (key repeat) stay one undo step', () => {
+      const a = createLayer('exposure');
+      s().addLayer(a);
+      const before = s().recipe;
+      const steps = s().past.length;
+      for (const ev of [0.1, 0.2, 0.3, 0.4]) {
+        s().beginEdit(); // a held arrow key calls this on every repeat
+        s().updateLayer(a.id, { params: { ev } });
+      }
+      s().endEdit();
+      expect(s().past).toHaveLength(steps + 1);
+      expect(s().recipe.layers[0]).toMatchObject({ params: { ev: 0.4 } });
+      s().undo();
+      expect(s().recipe).toBe(before);
+      expect(s().recipe.layers[0]).toMatchObject({ params: { ev: 0 } });
+    });
+
+    it('edits after endEdit start a new step; an empty drag adds none', () => {
+      const a = createLayer('exposure');
+      s().addLayer(a);
+      s().beginEdit();
+      s().endEdit();
+      expect(s().past).toHaveLength(1);
+      s().beginEdit();
+      s().updateLayer(a.id, { params: { ev: 1 } });
+      s().endEdit();
+      s().updateLayer(a.id, { params: { ev: 2 } });
+      expect(s().past).toHaveLength(3);
+    });
+
+    it('the first edit of a drag clears redo; later ones keep it clear', () => {
+      const a = createLayer('exposure');
+      s().addLayer(a);
+      s().undo();
+      expect(s().future).toHaveLength(1);
+      s().addLayer(a);
+      s().beginEdit();
+      s().updateLayer(a.id, { params: { ev: 1 } });
+      expect(s().future).toHaveLength(0);
+      s().endEdit();
+    });
+
+    it('undo and loadRecipe end an open edit', () => {
+      const a = createLayer('exposure');
+      s().addLayer(a);
+      s().beginEdit();
+      s().updateLayer(a.id, { params: { ev: 1 } });
+      s().undo();
+      s().redo();
+      s().updateLayer(a.id, { params: { ev: 2 } });
+      expect(s().past).toHaveLength(3);
+      s().beginEdit();
+      s().loadRecipe(createRecipe('x'));
+      s().addLayer(createLayer('fade'));
+      s().addLayer(createLayer('fade'));
+      expect(s().past).toHaveLength(2);
+    });
+  });
+
+  describe('no-op edits', () => {
+    it('updateLayer with an empty or unchanged patch adds no step', () => {
+      const a = createLayer('curve');
+      s().addLayer(a);
+      const steps = s().past.length;
+      const recipe = s().recipe;
+      s().updateLayer(a.id, {});
+      s().updateLayer(a.id, { params: {} });
+      s().updateLayer(a.id, { opacity: 1, enabled: true });
+      s().updateLayer(a.id, {
+        params: {
+          master: [
+            { x: 0, y: 0 },
+            { x: 1, y: 1 },
+          ],
+        },
+      });
+      expect(s().past).toHaveLength(steps);
+      expect(s().recipe).toBe(recipe);
+    });
+
+    it('setSpatial with an empty or unchanged patch adds no step', () => {
+      s().setSpatial({ grainAmount: 10 });
+      const steps = s().past.length;
+      s().setSpatial({});
+      s().setSpatial({ grainAmount: 10 });
+      s().setSpatial({ grainAmount: undefined });
+      expect(s().past).toHaveLength(steps);
+    });
+
+    it('a changing patch still records a step', () => {
+      const a = createLayer('exposure');
+      s().addLayer(a);
+      const steps = s().past.length;
+      s().updateLayer(a.id, { params: { ev: 1 } });
+      expect(s().past).toHaveLength(steps + 1);
+    });
+  });
+
+  it('renameRecipe is undoable and ignores unchanged names', () => {
+    s().renameRecipe('t');
+    expect(s().past).toHaveLength(0);
+    s().renameRecipe('Warm');
+    expect(s().recipe.name).toBe('Warm');
+    s().undo();
+    expect(s().recipe.name).toBe('t');
+  });
 });
