@@ -270,7 +270,12 @@ export function createRenderer(canvas: HTMLCanvasElement, options: RendererOptio
     generation++;
     res = createResources(gl);
     gpuLut = lut ? toGpuLut(lut) : null;
-    if (image) uploadImage(gl, res.imageTexture, image);
+    if (image) {
+      // setImage may have run while the context was lost, so the canvas can still have the old size.
+      if (canvas.width !== image.width) canvas.width = image.width;
+      if (canvas.height !== image.height) canvas.height = image.height;
+      uploadImage(gl, res.imageTexture, image);
+    }
     render();
   }
 

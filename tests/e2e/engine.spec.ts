@@ -302,6 +302,36 @@ test('recovers after WebGL context loss and restore', async ({ page }) => {
   expect(result.differsFromSource).toBeGreaterThan(50);
 });
 
+test('setImage during context loss resizes the canvas on restore', async ({ page }) => {
+  const result = await page.evaluate(async () => {
+    const e = window.__lutEngine!;
+    e.renderer.setImage(await e.gradientBitmap(128, 96));
+    e.renderer.setLut(null);
+    e.renderer.render();
+
+    const gl = e.canvas.getContext('webgl2')!;
+    const lose = gl.getExtension('WEBGL_lose_context')!;
+    lose.loseContext();
+    await new Promise((r) => setTimeout(r, 50));
+
+    const next = await e.gradientBitmap(64, 160);
+    const expected = e.bitmapPixels(next);
+    e.renderer.setImage(next); // stored only; GL is unavailable
+    lose.restoreContext();
+    await new Promise((r) => setTimeout(r, 200));
+
+    const { width, height, data } = e.readPixels();
+    return {
+      canvas: [e.canvas.width, e.canvas.height],
+      read: [width, height],
+      diff: e.maxDiff(data, expected),
+    };
+  });
+  expect(result.canvas).toEqual([64, 160]);
+  expect(result.read).toEqual([64, 160]);
+  expect(result.diff).toBeLessThanOrEqual(1);
+});
+
 test('perf: 2048 px preview + LUT frame time (logged, not gated)', async ({ page }, testInfo) => {
   const ms = await page.evaluate(async () => {
     const e = window.__lutEngine!;
