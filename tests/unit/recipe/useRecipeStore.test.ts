@@ -125,6 +125,23 @@ describe('useRecipeStore', () => {
       expect(s().recipe).toBe(before);
     });
 
+    it('repeated beginEdit calls (key repeat) stay one undo step', () => {
+      const a = createLayer('exposure');
+      s().addLayer(a);
+      const before = s().recipe;
+      const steps = s().past.length;
+      for (const ev of [0.1, 0.2, 0.3, 0.4]) {
+        s().beginEdit(); // a held arrow key calls this on every repeat
+        s().updateLayer(a.id, { params: { ev } });
+      }
+      s().endEdit();
+      expect(s().past).toHaveLength(steps + 1);
+      expect(s().recipe.layers[0]).toMatchObject({ params: { ev: 0.4 } });
+      s().undo();
+      expect(s().recipe).toBe(before);
+      expect(s().recipe.layers[0]).toMatchObject({ params: { ev: 0 } });
+    });
+
     it('edits after endEdit start a new step; an empty drag adds none', () => {
       const a = createLayer('exposure');
       s().addLayer(a);

@@ -29,7 +29,8 @@ interface RecipeState {
   renameRecipe: (name: string) => void;
   /**
    * Brackets a continuous edit (e.g. a slider drag): every edit between `beginEdit` and `endEdit`
-   * shares one undo step. Undo, redo and `loadRecipe` end the edit.
+   * shares one undo step. Calling `beginEdit` while an edit is open does nothing; `endEdit`, undo,
+   * redo and `loadRecipe` end the edit.
    */
   beginEdit: () => void;
   endEdit: () => void;
@@ -94,6 +95,8 @@ export const useRecipeStore = create<RecipeState>()((set, get) => {
     },
 
     beginEdit: () => {
+      // Key repeat fires this again mid-edit; only endEdit/undo/redo/loadRecipe close an edit.
+      if (editOpen) return;
       editOpen = true;
       editRecorded = false;
     },
