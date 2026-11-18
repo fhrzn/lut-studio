@@ -1,0 +1,229 @@
+.controls {
+  padding-top: 10px;
+}
+
+.controlsTitle {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.groupTitle {
+  margin: 10px 0 0;
+  color: var(--muted, #9a9aa3);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.opacityRow {
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px solid #3a3a40;
+}
+
+.slider {
+  display: grid;
+  grid-template-columns: 1fr 56px;
+  grid-template-areas:
+    'label number'
+    'range number';
+  align-items: center;
+  column-gap: 8px;
+  margin: 6px 0;
+}
+
+.sliderLabel {
+  grid-area: label;
+  color: #c4c4cc;
+  font-size: 12px;
+}
+
+.range {
+  grid-area: range;
+  width: 100%;
+  margin: 0;
+  accent-color: #5b9dff;
+}
+
+.customTrack {
+  appearance: none;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--track);
+}
+
+.customTrack::-webkit-slider-thumb {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background: #222;
+}
+
+.customTrack::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background: #222;
+}
+
+.range:focus-visible,
+.number:focus-visible,
+.tab:focus-visible,
+.tabActive:focus-visible,
+.band:focus-visible,
+.bandActive:focus-visible,
+.button:focus-visible,
+.linkButton:focus-visible {
+  outline: 2px solid #5b9dff;
+  outline-offset: 2px;
+}
+
+.number {
+  grid-area: number;
+  width: 56px;
+  height: 26px;
+  padding: 0 6px;
+  border: 1px solid #3a3a40;
+  border-radius: 4px;
+  background: #1b1b1d;
+  color: #e8e8ea;
+  font: inherit;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.tab,
+.tabActive {
+  padding: 3px 10px;
+  border: 1px solid #3a3a40;
+  border-radius: 4px;
+  background: #2d2d31;
+  color: #e8e8ea;
+  font: inherit;
+  cursor: pointer;
+}
+
+.tabActive {
+  background: #31507f;
+  border-color: #5b9dff;
+}
+
+.curve {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.curveSvg {
+  width: 100%;
+  max-width: 300px;
+  aspect-ratio: 1;
+  touch-action: none;
+  user-select: none;
+}
+
+.curveBg {
+  fill: #151517;
+  stroke: #3a3a40;
+  cursor: crosshair;
+}
+
+.curveGrid line {
+  stroke: #2b2b30;
+  pointer-events: none;
+}
+
+.curveDiagonal {
+  stroke: #4a4a52;
+  stroke-dasharray: 4 4;
+  pointer-events: none;
+}
+
+.curvePoint {
+  stroke: #111;
+  stroke-width: 1.5;
+  cursor: grab;
+}
+
+.curvePoint:focus-visible {
+  outline: none;
+  stroke: #fff;
+  stroke-width: 3;
+}
+
+.linkButton {
+  align-self: flex-start;
+  margin-top: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #8fb8ff;
+  font: inherit;
+  cursor: pointer;
+}
+
+.bands {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.band,
+.bandActive {
+  position: relative;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.bandActive {
+  border-color: #fff;
+}
+
+.bandDot {
+  position: absolute;
+  right: -2px;
+  top: -2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid #111;
+}
+
+.lut {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.lutName {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.button {
+  height: 30px;
+  padding: 0 12px;
+  border: 1px solid #3a3a40;
+  border-radius: 6px;
+  background: #2d2d31;
+  color: #e8e8ea;
+  font: inherit;
+  cursor: pointer;
+}
