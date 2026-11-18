@@ -1,0 +1,4 @@
+# size out of range
+TITLE "bad size"
+LUT_3D_SIZE 66
+0 0 0

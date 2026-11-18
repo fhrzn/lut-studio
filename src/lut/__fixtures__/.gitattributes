@@ -1,0 +1,2 @@
+# keep CRLF in fixtures
+*.cube -text
